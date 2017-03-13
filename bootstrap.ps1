@@ -1,22 +1,41 @@
-﻿param
+﻿<#
+.SYNOPSIS
+
+.DESCRIPTION
+
+.PARAMETER DoNotInstallRequired
+
+.PARAMETER InstallRecommended
+
+.EXAMPLE
+Open IE or Edge browser and navigate to following URL: https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/box.ps1
+
+.EXAMPLE
+
+.NOTES
+
+#>
+param
 (
     [Switch]
-    $InstallRequired = $false,
+    $SkipInstallRequired = $false,
 
     [Switch]
-    $InstallRecommended = $false,
+    $InstallRecommendedApps = $false,
 
+    [Switch]
+    $SkipWindowsUpdate = $false
+
+<#
     [String]
     $SqlServer2016IsoImage,
-
-    [String]
-    $SqlServer2016SaPassword,
 
     [String]
     $SqlServer2014IsoImage,
 
     [String]
-    $SqlServer2014SaPassword
+    $SqlServerSaPassword
+    #>
 )
 
 function Set-EnvironmentVariable
@@ -37,21 +56,21 @@ function Set-EnvironmentVariable
 
 }
 
-if ($InstallRequired)
+if ($SkipInstallRequired)
 {
-    Set-EnvironmentVariable -Key "BoxStarter:InstallRequired" -Value "1"
+    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRequired" -Value "1"
 }
 
-if ($InstallRecommended)
+if ($InstallRecommendedApps)
 {
-    Set-EnvironmentVariable -Key "BoxStarter:InstallRecommended" -Value "1"
+    Set-EnvironmentVariable -Key "BoxStarter:InstallRecommendedApps" -Value "1"
 }
 
 if ($SkipWindowsUpdate)
 {
     Set-EnvironmentVariable -Key "BoxStarter:SkipWindowsUpdate" -Value "1"
 }
-
+<#
 if ($SqlServer2016IsoImage)
 {
     Set-EnvironmentVariable -Key "choco:sqlserver2016:isoImage" -Value $SqlServer2016IsoImage
@@ -59,7 +78,7 @@ if ($SqlServer2016IsoImage)
     if ($SqlServer2016SaPassword) {
         # enable mixed mode auth
         $env:choco:sqlserver2016:SECURITYMODE="SQL"
-        $env:choco:sqlserver2016:SAPWD=$SqlServer2016SaPassword
+        $env:choco:sqlserver2016:SAPWD=$SqlServerSaPassword
     }
 }
 
@@ -70,22 +89,17 @@ if ($SqlServer2014IsoImage)
     if ($SqlServer2014SaPassword) {
         # enable mixed mode auth
         $env:choco:sqlserver2014:SECURITYMODE="SQL"
-        $env:choco:sqlserver2014:SAPWD=$SqlServer2014SaPassword
+        $env:choco:sqlserver2014:SAPWD=$SqlServerSaPassword
     }
 }
-
-function Get-ScriptDirectory {
-    Split-Path -Parent $PSCommandPath
-}
-
-$currentPath = Get-ScriptDirectory
-$installScript = "$currentPath\box.ps1"
+#>
+$installScript = "https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/box.ps1"
 $webLauncherUrl = "http://boxstarter.org/package/nr/url?$installScript"
 $edgeVersion = Get-AppxPackage -Name Microsoft.MicrosoftEdge
 
 if ($edgeVersion)
 {
-    start microsoft-edge:$webLauncherUrl
+    Start-Process microsoft-edge:$webLauncherUrl
 }
 else
 {
