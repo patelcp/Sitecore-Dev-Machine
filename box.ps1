@@ -81,7 +81,7 @@ function Install-RecommendedApps {
     choco install prefix               	    --limitoutput
 }
 
-function Install-WindowsUpdate {
+function Install-WindowsUpdates {
     if (Test-Path env:\BoxStarter:SkipWindowsUpdate) {
         return
     }
@@ -424,7 +424,7 @@ $dataDrive = "$dataDriveLetter`:"
 $tempInstallFolder = New-InstallCache -InstallDrive $dataDrive
 
 # SQL Server requires some KB patches before it will work, so windows update first
-Install-WindowsUpdate
+Install-WindowsUpdates
 
 # disable chocolatey default confirmation behaviour (no need for --yes)
 choco feature enable --name=allowGlobalConfirmation
@@ -488,6 +488,6 @@ Update-Path
 
 # rerun windows update after we have installed everything
 Write-BoxstarterMessage "Windows update..."
-Install-WindowsUpdate
+Install-WindowsUpdates
 
 Clear-Checkpoints
