@@ -6,8 +6,27 @@ This scripts can be used to setup a Sitcore Development Workstation using [Boxst
 
 ### Required Applications
 **Windows Configurations Changes made**
-* Windows Features
+
     * Internet Information Services
+            * Web Management Tools
+                * IIS Management Console
+                * IIS Management Scripts and Tools
+            * World Wide Web Services
+                * Application Development Features
+                    * .NET Extensibility 4.6
+                    * Application Initialization
+                    * ASP.NET 4.6
+                    * ISAPI Extensions
+                    * ISAPI Filters
+                * Common HTTP Features
+                    * All but WebDAV Publishing
+                * Health and Diagnostics
+                    * All
+                * Performance Features
+                    * All
+                * Security
+                    * Basic Authentication
+                    * Request Filtering
 
 **Applications Installed**
 * [Visual Studio 2015 Professional](https://www.visualstudio.com/vs/)
