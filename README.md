@@ -5,9 +5,12 @@ This scripts can be used to setup a Sitcore Development Workstation using [Boxst
 ## Software Installed
 
 ### Required Applications
+**Windows Configurations Changes made**
 * Windows Features
     * Internet Information Services
-* Visual Studio 2015 Professional
+
+**Applications Installed**
+* [Visual Studio 2015 Professional](https://www.visualstudio.com/vs/)
 * Visual Studio Extensions
     * Web Essentials 2015.3
     * Sitecore Rocks
