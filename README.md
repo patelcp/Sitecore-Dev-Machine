@@ -25,14 +25,14 @@ wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master
 
 |Argument|Type|Requires|Value Description|
 |--------|----|--------|-----------------|
-|SkipInstallRequired|Switch||Skip installing and configurating machine with the required applications|
+|SkipInstallRequiredApps|Switch||Skip installing and configurating machine with the required applications|
+|SkipInstallRecommendedApps|Switch||Install and configures machine with the recommended applications|
 |SkipWindowsUpdate|Switch||Skips running windows update|
-|InstallRecommendedApps|Switch||Install and configures machine with the recommended applications|
 
 ### Manual 
 Below method only installs the required applications.
 
 In Edge Or Internet Explorer, go to:
 ```http
-http://boxstarter.org/package/url??https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1
+http://boxstarter.org/package/url?https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1
 ```

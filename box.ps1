@@ -426,8 +426,8 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
     
 	Install-InternetInformationServices
     Install-RequiredApps
-	Install-VisualStudio
-	Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
+	#Install-VisualStudio
+	#Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
     Install-NpmPackages
 
     # pin chocolatey app that self-update
@@ -437,7 +437,7 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
     Set-RequiredAppSettings
 }
 
-if (Test-Path env:\BoxStarter:InstallRecommendedApps) {
+if (-not (Test-Path env:\BoxStarter:SkipInstallRecommendedApps)) {
     Write-BoxstarterMessage "Installing Recommended apps"
     Install-RecommendedApps
     Install-VisualStudioCode

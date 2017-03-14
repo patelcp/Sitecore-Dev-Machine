@@ -18,10 +18,10 @@ Open IE or Edge browser and navigate to following URL: https://raw.githubusercon
 param
 (
     [Switch]
-    $SkipInstallRequired = $false,
+    $SkipInstallRequiredApps = $false,
 
     [Switch]
-    $InstallRecommendedApps = $false,
+    $SkipInstallRecommendedApps = $false,
 
     [Switch]
     $SkipWindowsUpdate = $false
@@ -45,12 +45,12 @@ function Set-EnvironmentVariable
 
 }
 
-if ($SkipInstallRequired)
+if ($SkipInstallRequiredApps)
 {
-    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRequired" -Value "1"
+    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRequiredApps" -Value "1"
 }
 
-if ($InstallRecommendedApps)
+if ($SkipInstallRecommendedApps)
 {
     Set-EnvironmentVariable -Key "BoxStarter:InstallRecommendedApps" -Value "1"
 }
