@@ -60,12 +60,16 @@ function Get-SystemDrive {
 }
 
 function Install-RequiredApps {
+	choco install chocolatey 				--limitoutput
     choco install googlechrome              --limitoutput
     choco install firefox                   --limitoutput
     choco install flashplayerplugin         --limitoutput
     choco install adobereader               --limitoutput
-    choco install nodejs                    --limitoutput
+    choco install nodejs.install			--limitoutput
     choco install nugetpackageexplorer	    --limitoutput
+
+	choco install mssqlserver2014express	--limitoutput
+	choco install mssqlservermanagementstudio2014express --limitoutput
 }
 
 function Install-RecommendedApps {
@@ -75,7 +79,7 @@ function Install-RecommendedApps {
     choco install nuget.commandline		    --limitoutput
     choco install notepadplusplus.install   --limitoutput
     choco install linqpad4.install			--limitoutput
-    choco install poshgit                   --limitoutput
+    #choco install poshgit                   --limitoutput
     choco install sourcetree 	            --limitoutput
     choco install dotpeek             	    --limitoutput
     choco install prefix               	    --limitoutput
@@ -129,6 +133,26 @@ function Install-WebPackage {
     Set-Checkpoint -CheckpointName $packageName -CheckpointValue 1
 }
 
+function Install-ClickOnceApp {
+	param(
+		$ApplicationName,
+		$WebLauncherUrl
+	)
+
+	$edgeVersion = Get-AppxPackage -Name Microsoft.MicrosoftEdge
+
+	if ($edgeVersion)
+	{
+		Start-Process microsoft-edge:$webLauncherUrl
+	}
+	else
+	{
+		$IE=new-object -com internetexplorer.application
+		$IE.navigate2($webLauncherUrl)
+		$IE.visible=$true
+	}
+}
+
 function Install-SitecoreTools{
 	$sitecoreToolsPath = "$dataDrive\Sitecore\tools"
 	if(-not (Test-Path $sitecoreToolsPath)) {
@@ -137,54 +161,14 @@ function Install-SitecoreTools{
 
 	Install-ChocolateyZipPackage -PackageName 'Sitecore Config Builder 1.4' `
 		-Url 'https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip' `
-		-UnzipLocation $sitecoreToolsPath
-}
+		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder"
 
-function Install-SqlServerExpress {
-    choco install mssqlserver2014express
+	Install-ChocolateyZipPackage -PackageName 'Sitecore Log Analyzer' `
+		-Url 'https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da' `
+		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer"	
 
-    <#
-	param (
-		$InstallDrive
-	)
-
-	$dataPath = Join-Path $InstallDrive "Data\Sql"
-
-	#rejected by chocolatey.org since iso image is required  :|
-	$sqlPackageSource = "https://www.myget.org/F/nm-chocolatey-packs/api/v2"
-
-	choco install sql-server-management-studio --limitoutput
-
-	if ((Test-Path env:\choco:sqlserver2014:isoImage) -or (Test-Path env:\choco:sqlserver2014:setupFolder))
-	{
-		# SQL2014 has dependency on .net 3.5
-		choco install NetFx3                 --source windowsfeatures --limitoutput
-
-		# Note: No support for Windows 7 https://msdn.microsoft.com/en-us/library/ms143506.aspx
-		if (Test-PendingReboot) { Invoke-Reboot }
-		$env:choco:sqlserver2014:INSTALLSQLDATADIR=$dataPath
-		$env:choco:sqlserver2014:INSTANCEID="sql2014"
-		$env:choco:sqlserver2014:INSTANCENAME="sql2014"
-		$env:choco:sqlserver2014:FEATURES="SQLENGINE,ADV_SSMS"
-		$env:choco:sqlserver2014:AGTSVCACCOUNT="NT Service\SQLAgent`$SQL2014"
-		$env:choco:sqlserver2014:SQLSVCACCOUNT="NT Service\MSSQL`$SQL2014"
-		$env:choco:sqlserver2014:SQLCOLLATION="SQL_Latin1_General_CP1_CI_AS"
-		choco install sqlserver2014 --source=$sqlPackageSource
-	}
-
-	if ((Test-Path env:\choco:sqlserver2016:isoImage) -or (Test-Path env:\choco:sqlserver2016:setupFolder))
-	{
-		# Note: No support for Windows 7 https://msdn.microsoft.com/en-us/library/ms143506.aspx
-		if (Test-PendingReboot) { Invoke-Reboot }
-		$env:choco:sqlserver2016:INSTALLSQLDATADIR=$dataPath
-		$env:choco:sqlserver2016:INSTANCEID="sql2016"
-		$env:choco:sqlserver2016:INSTANCENAME="sql2016"
-		$env:choco:sqlserver2016:AGTSVCACCOUNT="NT Service\SQLAgent`$SQL2016"
-		$env:choco:sqlserver2016:SQLSVCACCOUNT="NT Service\MSSQL`$SQL2016"
-		$env:choco:sqlserver2016:SQLCOLLATION="SQL_Latin1_General_CP1_CI_AS"
-		choco install sqlserver2016 --source=$sqlPackageSource
-	}
-	#>
+	Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
+	Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
 }
 
 function Install-VisualStudio {
@@ -303,6 +287,8 @@ function Install-InternetInformationServices {
     # Security Features
     choco install IIS-BasicAuthentication           --source windowsfeatures --limitoutput
 
+	choco install UrlRewrite2 						--source webpi			 --limitoutput
+
     Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
 }
 
@@ -343,8 +329,8 @@ function Install-PowerShellModules {
 
 function Set-ChocoRequiredAppPins {
     # pin apps that update themselves
-	choco pin add -n=VisualStudio2015Professional
-	choco pin add -n=mssqlserver2014express
+	#choco pin add -n=VisualStudio2015Professional
+	#choco pin add -n=mssqlserver2014express
     choco pin add -n=googlechrome
     choco pin add -n=firefox
     #choco pin add -n=visualstudio2015community
@@ -387,7 +373,7 @@ function Set-BaseSettings {
 
 function Set-RequiredAppSettings {
     Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe" -ErrorAction SilentlyContinue
-	Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" -ErrorAction SilentlyContinue
+	#Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" -ErrorAction SilentlyContinue
 }
 
 function Set-RecommendedAppSettings {
@@ -440,13 +426,8 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
     
 	Install-InternetInformationServices
     Install-RequiredApps
-
 	Install-VisualStudio
 	Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
-
-    #Install-SqlServerExpress 
-	#Install-SqlServer -InstallDrive $dataDrive
-
     Install-NpmPackages
 
     # pin chocolatey app that self-update

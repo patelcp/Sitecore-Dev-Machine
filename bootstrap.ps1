@@ -25,17 +25,6 @@ param
 
     [Switch]
     $SkipWindowsUpdate = $false
-
-<#
-    [String]
-    $SqlServer2016IsoImage,
-
-    [String]
-    $SqlServer2014IsoImage,
-
-    [String]
-    $SqlServerSaPassword
-    #>
 )
 
 function Set-EnvironmentVariable
