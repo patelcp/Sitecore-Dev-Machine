@@ -14,6 +14,7 @@ wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master
 2. Install only the required applications and skip windows updates
 ```powershell
 wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1' -OutFile "$($env:temp)\bootstrap.ps1";&Invoke-Command -ScriptBlock { &"$($env:temp)\bootstrap.ps1" -SkipWindowsUpdate }
+```
 
 3. Install Required and Recommended applications
 ```powershell
