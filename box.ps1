@@ -66,7 +66,7 @@ function Install-RequiredApps {
     choco install flashplayerplugin         --limitoutput
     choco install adobereader               --limitoutput
     choco install nodejs.install			--limitoutput
-    choco install nugetpackageexplorer	    --limitoutput
+    #choco install nugetpackageexplorer	    --limitoutput
 
 	choco install mssqlserver2014express	--limitoutput
 	choco install mssqlservermanagementstudio2014express --limitoutput
@@ -239,7 +239,6 @@ function Install-VisualStudioCode {
         code --install-extension msazurermtools.azurerm-vscode-tools
         code --install-extension robertohuertasm.vscode-icons
         code --install-extension DavidAnson.vscode-markdownlint
-        #code --install-extension donjayamanne.githistory
         #code --install-extension msjsdiag.debugger-for-chrome
 
         Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
