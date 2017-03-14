@@ -60,29 +60,53 @@ function Get-SystemDrive {
 }
 
 function Install-RequiredApps {
-	choco install chocolatey 				--limitoutput
-    choco install googlechrome              --limitoutput
-    choco install firefox                   --limitoutput
-    choco install flashplayerplugin         --limitoutput
-    choco install adobereader               --limitoutput
-    choco install nodejs.install			--limitoutput
-    #choco install nugetpackageexplorer	    --limitoutput
+    $checkpoint = 'RequiredApps'
+    $done = Get-Checkpoint -CheckpointName $checkpoint
 
-	choco install mssqlserver2014express	--limitoutput
-	choco install mssqlservermanagementstudio2014express --limitoutput
+    if (-not $done) {
+        choco install googlechrome              --limitoutput
+        choco install firefox                   --limitoutput
+        choco install flashplayerplugin         --limitoutput
+        choco install adobereader               --limitoutput
+        choco install nodejs.install			--limitoutput
+        #choco install nugetpackageexplorer	    --limitoutput
+
+        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    }
+
 }
 
 function Install-RecommendedApps {
-    choco install jdk8		        	    --limitoutput
-    choco install git.install               --limitoutput
-    choco install fiddler4               	--limitoutput
-    choco install nuget.commandline		    --limitoutput
-    choco install notepadplusplus.install   --limitoutput
-    choco install linqpad4.install			--limitoutput
-    #choco install poshgit                   --limitoutput
-    choco install sourcetree 	            --limitoutput
-    choco install dotpeek             	    --limitoutput
-    choco install prefix               	    --limitoutput
+    $checkpoint = 'RecommendedApps'
+    $done = Get-Checkpoint -CheckpointName $checkpoint
+
+    if (-not $done) {
+        choco install jdk8		        	    --limitoutput
+        choco install git.install               --limitoutput
+        choco install fiddler4               	--limitoutput
+        choco install nuget.commandline		    --limitoutput
+        choco install notepadplusplus.install   --limitoutput
+        choco install linqpad4.install			--limitoutput
+        #choco install poshgit                   --limitoutput
+        choco install sourcetree 	            --limitoutput
+        choco install dotpeek             	    --limitoutput
+        choco install prefix               	    --limitoutput
+	
+        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    }
+
+}
+
+function Install-SQLServerExpress{
+    $checkpoint = 'SQLServerExpress'
+    $done = Get-Checkpoint -CheckpointName $checkpoint
+
+    if (-not $done) {
+        choco install mssqlserver2014express	--limitoutput
+        choco install mssqlservermanagementstudio2014express --limitoutput
+
+        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    }
 }
 
 function Install-WindowsUpdates {
@@ -134,41 +158,47 @@ function Install-WebPackage {
 }
 
 function Install-ClickOnceApp {
-	param(
-		$ApplicationName,
-		$WebLauncherUrl
-	)
+    param(
+        $ApplicationName,
+        $WebLauncherUrl
+    )
 
-	$edgeVersion = Get-AppxPackage -Name Microsoft.MicrosoftEdge
+    $edgeVersion = Get-AppxPackage -Name Microsoft.MicrosoftEdge
 
-	if ($edgeVersion)
-	{
-		Start-Process microsoft-edge:$webLauncherUrl
-	}
-	else
-	{
-		$IE=new-object -com internetexplorer.application
-		$IE.navigate2($webLauncherUrl)
-		$IE.visible=$true
-	}
+    if ($edgeVersion) {
+        Start-Process microsoft-edge:$webLauncherUrl
+    }
+    else {
+        $IE=new-object -com internetexplorer.application
+        $IE.navigate2($webLauncherUrl)
+        $IE.visible=$true
+    }
 }
 
 function Install-SitecoreTools{
-	$sitecoreToolsPath = "$dataDrive\Sitecore\tools"
-	if(-not (Test-Path $sitecoreToolsPath)) {
-        New-Item $sitecoreToolsPath -ItemType Directory
-    }
 
-	Install-ChocolateyZipPackage -PackageName 'Sitecore Config Builder 1.4' `
+    $checkpoint = 'SitecoreTools'
+    $done = Get-Checkpoint -CheckpointName $checkpoint
+
+    if (-not $done) {
+        $sitecoreToolsPath = "$dataDrive\Sitecore\tools"
+        if(-not (Test-Path $sitecoreToolsPath)) {
+            New-Item $sitecoreToolsPath -ItemType Directory
+        }
+
+        Install-ChocolateyZipPackage -PackageName 'Sitecore Config Builder 1.4' `
 		-Url 'https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip' `
 		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder"
 
-	Install-ChocolateyZipPackage -PackageName 'Sitecore Log Analyzer' `
+        Install-ChocolateyZipPackage -PackageName 'Sitecore Log Analyzer' `
 		-Url 'https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da' `
 		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer"	
 
-	Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
-	Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
+        Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
+        Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
+    
+        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    }
 }
 
 function Install-VisualStudio {
@@ -193,7 +223,7 @@ function Install-VisualStudioExtensionsRequired {
     $done = Get-Checkpoint -CheckpointName $checkpoint
 
     if (-not $done) {
-    	Install-ChocolateyVsixPackage 'Web Essentials 2015.3' https://visualstudiogallery.msdn.microsoft.com/ee6e6d8c-c837-41fb-886a-6b50ae2d06a2/file/146119/48/Web%20Essentials%202015.3%20v3.0.235.vsix
+        Install-ChocolateyVsixPackage 'Web Essentials 2015.3' https://visualstudiogallery.msdn.microsoft.com/ee6e6d8c-c837-41fb-886a-6b50ae2d06a2/file/146119/48/Web%20Essentials%202015.3%20v3.0.235.vsix
         Install-ChocolateyVsixPackage 'Sitecore Rocks' https://visualstudiogallery.msdn.microsoft.com/44a26c88-83a7-46f6-903c-5c59bcd3d35b/file/35439/48/Sitecore.Rocks.VisualStudio.vsix
         Install-ChocolateyVsixPackage 'StyleCop' https://visualstudiogallery.msdn.microsoft.com/5441d959-387f-4cb2-a8c0-9998dd1fa49f/file/231103/2/StyleCop.vsix
 
@@ -211,10 +241,10 @@ function Install-VisualStudioExtensionsRecommended {
         Install-ChocolateyVsixPackage 'Productivity Power Tools 2015' https://visualstudiogallery.msdn.microsoft.com/34ebc6a2-2777-421d-8914-e29c1dfa7f5d/file/169971/3/ProPowerTools.vsix 
         Install-ChocolateyVsixPackage 'PowerShell Tools for Visual Studio 2015' https://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/file/199313/3/PowerShellTools.14.0.vsix
         Install-ChocolateyVsixPackage 'Spell Checker' https://visualstudiogallery.msdn.microsoft.com/7c8341f1-ebac-40c8-92c2-476db8d523ce/file/15808/12/SpellChecker.vsix
-		Install-ChocolateyVsixPackage 'Web Compiler' https://visualstudiogallery.msdn.microsoft.com/3b329021-cd7a-4a01-86fc-714c2d05bb6c/file/164873/35/Web%20Compiler%20v1.10.300.vsix
+        Install-ChocolateyVsixPackage 'Web Compiler' https://visualstudiogallery.msdn.microsoft.com/3b329021-cd7a-4a01-86fc-714c2d05bb6c/file/164873/35/Web%20Compiler%20v1.10.300.vsix
         Install-ChocolateyVsixPackage 'Web Analyzer' https://visualstudiogallery.msdn.microsoft.com/6edc26d4-47d8-4987-82ee-7c820d79be1d/file/181923/24/Web%20Analyzer%20v1.7.77.vsix
-		Install-ChocolateyVsixPackage 'Markdown Editor' https://visualstudiogallery.msdn.microsoft.com/eaab33c3-437b-4918-8354-872dfe5d1bfe/file/216970/26/Markdown%20Editor%20v1.11.201.vsix
-		Install-ChocolateyVsixPackage 'Gulp Snippet Pack' https://visualstudiogallery.msdn.microsoft.com/9e26d1f9-1baf-4983-8c25-f5f769998d4f/file/205735/4/Gulp%20Snippet%20Pack%20v1.2.6.vsix
+        Install-ChocolateyVsixPackage 'Markdown Editor' https://visualstudiogallery.msdn.microsoft.com/eaab33c3-437b-4918-8354-872dfe5d1bfe/file/216970/26/Markdown%20Editor%20v1.11.201.vsix
+        Install-ChocolateyVsixPackage 'Gulp Snippet Pack' https://visualstudiogallery.msdn.microsoft.com/9e26d1f9-1baf-4983-8c25-f5f769998d4f/file/205735/4/Gulp%20Snippet%20Pack%20v1.2.6.vsix
 
         Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
     }
@@ -286,7 +316,7 @@ function Install-InternetInformationServices {
     # Security Features
     choco install IIS-BasicAuthentication           --source windowsfeatures --limitoutput
 
-	choco install UrlRewrite2 						--source webpi			 --limitoutput
+    choco install UrlRewrite2 						--source webpi			 --limitoutput
 
     Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
 }
@@ -328,8 +358,8 @@ function Install-PowerShellModules {
 
 function Set-ChocoRequiredAppPins {
     # pin apps that update themselves
-	#choco pin add -n=VisualStudio2015Professional
-	#choco pin add -n=mssqlserver2014express
+    #choco pin add -n=VisualStudio2015Professional
+    #choco pin add -n=mssqlserver2014express
     choco pin add -n=googlechrome
     choco pin add -n=firefox
     #choco pin add -n=visualstudio2015community
@@ -372,15 +402,15 @@ function Set-BaseSettings {
 
 function Set-RequiredAppSettings {
     Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe" -ErrorAction SilentlyContinue
-	#Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" -ErrorAction SilentlyContinue
+    #Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" -ErrorAction SilentlyContinue
 }
 
 function Set-RecommendedAppSettings {
-	Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Fiddler2\Fiddler.exe" -ErrorAction SilentlyContinue
-	Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft VS Code\Code.exe" -ErrorAction SilentlyContinue
-	Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\Ssms.exe" -ErrorAction SilentlyContinue
+    Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Fiddler2\Fiddler.exe" -ErrorAction SilentlyContinue
+    Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft VS Code\Code.exe" -ErrorAction SilentlyContinue
+    Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\Ssms.exe" -ErrorAction SilentlyContinue
 
-	Install-ChocolateyFileAssociation ".txt" "${env:ProgramFiles(x86)}\Notepad++\notepad++.exe" -ErrorAction SilentlyContinue
+    Install-ChocolateyFileAssociation ".txt" "${env:ProgramFiles(x86)}\Notepad++\notepad++.exe" -ErrorAction SilentlyContinue
     Install-ChocolateyFileAssociation ".dll" "$env:LOCALAPPDATA\JetBrains\Installations\dotPeek06\dotPeek64.exe" -ErrorAction SilentlyContinue
 }
 
@@ -420,14 +450,14 @@ Write-BoxstarterMessage "Starting installs"
 
 if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
     Write-BoxstarterMessage "Installing Required apps"
-
-	Install-SitecoreTools
-    
-	Install-InternetInformationServices
+	
+    Install-InternetInformationServices
     Install-RequiredApps
-	#Install-VisualStudio
-	#Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
     Install-NpmPackages
+    Install-SitecoreTools
+	Install-SQLServerExpress
+    #Install-VisualStudio
+    #Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
 
     # pin chocolatey app that self-update
     Set-ChocoRequiredAppPins
@@ -467,7 +497,6 @@ Update-Path
 [Environment]::SetEnvironmentVariable("HOME", $env:UserProfile, "User")
 
 # rerun windows update after we have installed everything
-Write-BoxstarterMessage "Windows update..."
 Install-WindowsUpdates
 
 Clear-Checkpoints

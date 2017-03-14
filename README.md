@@ -73,11 +73,19 @@ This scripts can be used to setup a Sitcore Development Workstation using [Boxst
 ## How to use
 Using a blank windows machine, run one of the below scripts in a elevated PowerShell terminal
 
-### Using bootstrap
+### Manual Install
+Below method only installs the required applications.
+
+In Edge Or Internet Explorer, go to:
+```http
+http://boxstarter.org/package/url?https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1
+```
+
+### PowerShell
 1. Install only the required applications
 
 ```powershell
-wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1' -OutFile "$($env:temp)\bootstrap.ps1";&Invoke-Command -ScriptBlock { &"$($env:temp)\bootstrap.ps1"}
+wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1' -OutFile "$($env:temp)\bootstrap.ps1";&Invoke-Command -ScriptBlock { &"$($env:temp)\bootstrap.ps1" -SkipInstallRequiredApps}
 ```
 2. Install only the required applications and skip windows updates
 ```powershell
@@ -97,10 +105,3 @@ wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master
 |SkipInstallRecommendedApps|Switch||Install and configures machine with the recommended applications|
 |SkipWindowsUpdate|Switch||Skips running windows update|
 
-### Manual 
-Below method only installs the required applications.
-
-In Edge Or Internet Explorer, go to:
-```http
-http://boxstarter.org/package/url?https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/bootstrap.ps1
-```
