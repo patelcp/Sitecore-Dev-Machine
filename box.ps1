@@ -85,7 +85,7 @@ function Install-RecommendedApps {
         choco install git.install               --limitoutput
         choco install fiddler4               	--limitoutput
         choco install nuget.commandline		    --limitoutput
-        choco install notepadplusplus.install   --limitoutput
+        choco install notepadplusplus.install   --limitoutput --x86
         choco install linqpad4.install			--limitoutput
         #choco install poshgit                   --limitoutput
         choco install sourcetree 	            --limitoutput
@@ -401,14 +401,16 @@ function Set-BaseSettings {
 }
 
 function Set-RequiredAppSettings {
-    Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe" -ErrorAction SilentlyContinue
+    # The Install-ChocolateyPinnedTaskBarItem is broken in Windows 10: https://github.com/chocolatey/choco/issues/627
+    #Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe" -ErrorAction SilentlyContinue
     #Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" -ErrorAction SilentlyContinue
 }
 
 function Set-RecommendedAppSettings {
-    Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Fiddler2\Fiddler.exe" -ErrorAction SilentlyContinue
-    Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft VS Code\Code.exe" -ErrorAction SilentlyContinue
-    Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\Ssms.exe" -ErrorAction SilentlyContinue
+    # The Install-ChocolateyPinnedTaskBarItem is broken in Windows 10: https://github.com/chocolatey/choco/issues/627
+    #Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Fiddler2\Fiddler.exe" -ErrorAction SilentlyContinue
+    #Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft VS Code\Code.exe" -ErrorAction SilentlyContinue
+    #Install-ChocolateyPinnedTaskBarItem "${env:ProgramFiles(x86)}\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\Ssms.exe" -ErrorAction SilentlyContinue
 
     Install-ChocolateyFileAssociation ".txt" "${env:ProgramFiles(x86)}\Notepad++\notepad++.exe" -ErrorAction SilentlyContinue
     Install-ChocolateyFileAssociation ".dll" "$env:LOCALAPPDATA\JetBrains\Installations\dotPeek06\dotPeek64.exe" -ErrorAction SilentlyContinue
