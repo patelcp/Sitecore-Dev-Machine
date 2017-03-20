@@ -447,7 +447,7 @@ $dataDrive = "$dataDriveLetter`:"
 $tempInstallFolder = New-InstallCache -InstallDrive $dataDrive
 
 # SQL Server requires some KB patches before it will work, so windows update first
-Install-WindowsUpdates
+#Install-WindowsUpdates
 
 # disable chocolatey default confirmation behaviour (no need for --yes)
 choco feature enable --name=allowGlobalConfirmation
@@ -502,6 +502,6 @@ Update-Path
 [Environment]::SetEnvironmentVariable("HOME", $env:UserProfile, "User")
 
 # rerun windows update after we have installed everything
-Install-WindowsUpdates
+#Install-WindowsUpdates
 
 Clear-Checkpoints
