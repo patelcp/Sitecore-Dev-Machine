@@ -66,7 +66,7 @@ function Install-RequiredApps {
     if (-not $done) {
         choco install googlechrome              --limitoutput
         choco install firefox                   --limitoutput
-        choco install flashplayerplugin         --limitoutput
+       # choco install flashplayerplugin         --limitoutput
         choco install adobereader               --limitoutput
         choco install nodejs.install			--limitoutput
         #choco install nugetpackageexplorer	    --limitoutput
@@ -188,11 +188,11 @@ function Install-SitecoreTools{
 
         Install-ChocolateyZipPackage -PackageName 'Sitecore Config Builder 1.4' `
 		-Url 'https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip' `
-		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder" --allow-empty-checksums
+		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder" --allow-empty-checksums-secure
 
         Install-ChocolateyZipPackage -PackageName 'Sitecore Log Analyzer' `
 		-Url 'https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da' `
-		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer"	--allow-empty-checksums
+		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer"	--allow-empty-checksums-secure
 
         Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
         Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
@@ -436,6 +436,8 @@ function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
+
 $dataDriveLetter = Get-SystemDrive
 $dataDrive = "$dataDriveLetter`:"
 $tempInstallFolder = New-InstallCache -InstallDrive $dataDrive
@@ -479,9 +481,6 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRecommendedApps)) {
     # Add App shortcuts on taskbar
     Set-RecommendedAppSettings
 }
-
-# install chocolatey as last choco package
-choco install chocolatey --limitoutput
 
 # re-enable chocolatey default confirmation behaviour
 choco feature disable --name=allowGlobalConfirmation
