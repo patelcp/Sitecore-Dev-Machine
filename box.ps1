@@ -458,7 +458,7 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
     Install-InternetInformationServices
     Install-RequiredApps
     Install-NpmPackages
-    Install-SitecoreTools
+    #Install-SitecoreTools
 	Install-SQLServerExpress
     #Install-VisualStudio
     #Install-VisualStudioExtensionsRequired -DownloadFolder $tempInstallFolder
