@@ -71,6 +71,8 @@ function Install-RequiredApps {
         choco install nodejs.install			--limitoutput
         #choco install nugetpackageexplorer	    --limitoutput
 
+        refreshenv
+
         Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
     }
 
@@ -382,6 +384,8 @@ function Set-BaseSettings {
 
     Update-ExecutionPolicy -Policy Unrestricted
 
+    Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
+
     $sytemDrive = Get-SystemDrive
     #Set-Volume -DriveLetter $sytemDrive -NewFileSystemLabel "System"
 
@@ -396,6 +400,8 @@ function Set-BaseSettings {
 
     # Disable hibernate
     #Start-Process 'powercfg.exe' -Verb runAs -ArgumentList '/h off'
+
+    refreshenv
 
     Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
 }
@@ -435,8 +441,6 @@ function New-InstallCache {
 function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
-
-iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
 
 $dataDriveLetter = Get-SystemDrive
 $dataDrive = "$dataDriveLetter`:"
