@@ -55,7 +55,7 @@ if ($SkipInstallRequiredApps)
 
 if ($SkipInstallRecommendedApps)
 {
-    Set-EnvironmentVariable -Key "BoxStarter:InstallRecommendedApps" -Value "1"
+    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRequired" -Value "1"
 }
 
 if ($SkipSitcoreTools)
@@ -91,7 +91,7 @@ if ($SqlServer2014IsoImage)
 }
 #>
 $installScript = "https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master/box.ps1"
-$webLauncherUrl = "http://boxstarter.org/package/nr/url?$installScript"
+$webLauncherUrl = "http://boxstarter.org/package/url?$installScript"
 $edgeVersion = Get-AppxPackage -Name Microsoft.MicrosoftEdge
 
 if ($edgeVersion)
