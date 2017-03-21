@@ -403,7 +403,8 @@ function Set-BaseSettings {
 
     Update-ExecutionPolicy -Policy Unrestricted
 
-    #Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
+    # install chocolatey
+    choco install chocolatey --limitoutput
 
     $sytemDrive = Get-SystemDrive
     #Set-Volume -DriveLetter $sytemDrive -NewFileSystemLabel "System"
@@ -524,9 +525,6 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRecommendedApps)) {
     # Add App shortcuts on taskbar
     Set-RecommendedAppSettings
 }
-
-# install chocolatey as last choco package
-choco install chocolatey --limitoutput
 
 # re-enable chocolatey default confirmation behaviour
 choco feature disable --name=allowGlobalConfirmation
