@@ -24,6 +24,9 @@ param
     $SkipInstallRecommendedApps = $false,
 
     [Switch]
+    $SkipSitcoreTools = $false,
+
+    [Switch]
     $SkipWindowsUpdate = $false
 )
 
@@ -53,6 +56,11 @@ if ($SkipInstallRequiredApps)
 if ($SkipInstallRecommendedApps)
 {
     Set-EnvironmentVariable -Key "BoxStarter:InstallRecommendedApps" -Value "1"
+}
+
+if ($SkipSitcoreTools)
+{
+    Set-EnvironmentVariable -Key "BoxStarter:SkipSitcoreTools" -Value "1"
 }
 
 if ($SkipWindowsUpdate)
