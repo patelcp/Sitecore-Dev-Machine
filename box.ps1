@@ -216,19 +216,28 @@ function Install-SitecoreTools{
     if(-not (Test-Path $sitecoreToolsPath)) {
         New-Item $sitecoreToolsPath -ItemType Directory
     }
+    choco feature disable -n=checksumFiles
+    choco feature enable -n=allowEmptyChecksums
+    try {
 
-    Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName 'Sitecore Config Builder 1.4' `
+        Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName 'Sitecore Config Builder 1.4' `
 		-Url 'https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip' `
 		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder" 
 
-    Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName 'Sitecore Log Analyzer' `
+        Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName 'Sitecore Log Analyzer' `
 		-Url 'https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da' `
 		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer"	
 
-    Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
-    Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
+        Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
+        Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
     
-    Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    }
+    finally {
+        choco feature enable -n=checksumFiles
+        choco feature disable -n=allowEmptyChecksums
+        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
+    
+    }
 }
 
 function Install-SQLServerExpress{
