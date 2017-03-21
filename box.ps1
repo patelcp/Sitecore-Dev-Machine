@@ -216,6 +216,7 @@ function Install-SitecoreTools{
     if(-not (Test-Path $sitecoreToolsPath)) {
         New-Item $sitecoreToolsPath -ItemType Directory
     }
+
     choco feature disable -n=checksumFiles
     choco feature enable -n=allowEmptyChecksums
     try {
@@ -402,7 +403,7 @@ function Set-BaseSettings {
 
     Update-ExecutionPolicy -Policy Unrestricted
 
-    Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
+    #Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
 
     $sytemDrive = Get-SystemDrive
     #Set-Volume -DriveLetter $sytemDrive -NewFileSystemLabel "System"
@@ -523,6 +524,9 @@ if (-not (Test-Path env:\BoxStarter:SkipInstallRecommendedApps)) {
     # Add App shortcuts on taskbar
     Set-RecommendedAppSettings
 }
+
+# install chocolatey as last choco package
+choco install chocolatey --limitoutput
 
 # re-enable chocolatey default confirmation behaviour
 choco feature disable --name=allowGlobalConfirmation
