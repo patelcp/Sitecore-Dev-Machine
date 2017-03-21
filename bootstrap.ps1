@@ -55,7 +55,7 @@ if ($SkipInstallRequiredApps)
 
 if ($SkipInstallRecommendedApps)
 {
-    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRequired" -Value "1"
+    Set-EnvironmentVariable -Key "BoxStarter:SkipInstallRecommendedApps" -Value "1"
 }
 
 if ($SkipSitcoreTools)
