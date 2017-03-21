@@ -480,7 +480,7 @@ Set-BaseSettings
 
 Write-BoxstarterMessage "Starting installs"
 
-if (-not (Test-Path env:\BoxStarter:SkipInstallRequired)) {
+if (-not (Test-Path env:\BoxStarter:SkipInstallRequiredApps)) {
     Write-BoxstarterMessage "Installing Required apps"
 	
     Install-InternetInformationServices
