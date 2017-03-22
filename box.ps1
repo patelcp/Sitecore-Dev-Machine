@@ -100,11 +100,9 @@ function Install-InternetInformationServices {
     choco install NetFx4Extended-ASPNET45           --source windowsfeatures --limitoutput # installs ASP.NET 4.5/4.6
 
     # Application Development Features
-    choco install IIS-NetFxExtensibility            --source windowsfeatures --limitoutput # installs ASP.NET 3.5
     choco install IIS-NetFxExtensibility45          --source windowsfeatures --limitoutput # installs .NET Extensibility 4.5/4.6
     choco install IIS-ISAPIFilter                   --source windowsfeatures --limitoutput # required by IIS-ASPNET45
     choco install IIS-ISAPIExtensions               --source windowsfeatures --limitoutput # required by IIS-ASPNET45
-    choco install IIS-ASPNET                        --source windowsfeatures --limitoutput # install support for ASP.NET 3.5
     choco install IIS-ASPNET45                      --source windowsfeatures --limitoutput # installs support for ASP.NET 4.5/4.6
     choco install IIS-ApplicationInit               --source windowsfeatures --limitoutput
 
@@ -169,11 +167,11 @@ function Install-RequiredApps {
         return
     }
 
+    choco install nodejs.install			--limitoutput
     choco install googlechrome              --limitoutput
     choco install firefox                   --limitoutput
     choco install flashplayerplugin         --limitoutput
     choco install adobereader               --limitoutput
-    choco install nodejs.install			--limitoutput
     #choco install nugetpackageexplorer	    --limitoutput
 
     refreshenv
@@ -219,28 +217,16 @@ function Install-SitecoreTools{
         New-Item $sitecoreToolsPath -ItemType Directory
     }
 
-    choco feature disable -n=checksumFiles
-    choco feature enable -n=allowEmptyChecksums
-    try {
+    Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName "Sitecore Config Builder 1.4" `
+    -Url "https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip" `
+    -UnzipLocation "$sitecoreToolsPath\ConfigBuilder" -checksum "a254e7571b2c488c973d2d3edb609bc8"
 
-        Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName "Sitecore Config Builder 1.4" `
-		-Url "https://github.com/Sitecore/Sitecore-Config-Builder/releases/download/1.4.0.20/SCB.1.4.0.20.zip" `
-		-UnzipLocation "$sitecoreToolsPath\ConfigBuilder" -checksum "a254e7571b2c488c973d2d3edb609bc8"
+    Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName "Sitecore Log Analyzer" `
+    -Url "https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da" `
+    -UnzipLocation "$sitecoreToolsPath\LogAnalyzer" -checksum "f1a6ed38a86daa9ec247b0dd67611f7d"
 
-        Install-ChocolateyZipPackage -allowEmptyChecksumsSecure -PackageName "Sitecore Log Analyzer" `
-		-Url "https://marketplace.sitecore.net/services/~/media/A99BCECAD8B44DA8B2CB27FC0BC6DD05.ashx?data=SCLA%202.0.0%20rev.%20140603&itemId=420d8d66-cc7f-4b59-a936-16c18cac13da" `
-		-UnzipLocation "$sitecoreToolsPath\LogAnalyzer" -checksum "f1a6ed38a86daa9ec247b0dd67611f7d"
-
-        Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application" -Verb runAs
-        Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application" -Verb runAs
-    
-    }
-    finally {
-        choco feature enable -n=checksumFiles
-        choco feature disable -n=allowEmptyChecksums
-        Set-Checkpoint -CheckpointName $checkpoint -CheckpointValue 1
-    
-    }
+    Install-ClickOnceApp -ApplicationName "Sitecore Instance Manager" -WebLauncherUrl "http://dl.sitecore.net/updater/sim/SIM.Tool.application"
+    Install-ClickOnceApp -ApplicationName "Sitecore Diagnostics Toolset" -WebLauncherUrl "http://dl.sitecore.net/updater/sdt/Sitecore.DiagnosticsToolset.WinApp.application"
 }
 
 function Install-SQLServerExpress{
