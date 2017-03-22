@@ -106,3 +106,8 @@ wget -Uri 'https://raw.githubusercontent.com/chiragp/Sitecore-Dev-Machine/master
 |SkipInstallRecommendedApps|Switch||Install and configures machine with the recommended applications|
 |SkipWindowsUpdate|Switch||Skips running windows update|
 
+### Troubleshootting
+Check Boxstarter Logs at:
+```
+%LocalAppData%\Boxstarter\Boxstarter.log  
+```
